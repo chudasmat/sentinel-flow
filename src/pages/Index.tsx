@@ -20,7 +20,6 @@ const Index = () => {
   }
 
   function handleExpand() {
-    setPanelOpen(false);
     setModalOpen(true);
   }
 
@@ -28,15 +27,20 @@ const Index = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <QuickActions />
-      <main className="flex-1 overflow-auto">
-        <ThreadTable threads={threads} onSelectThread={handleSelectThread} />
-      </main>
-      <ThreadSlidePanel
-        thread={selectedThread}
-        open={panelOpen}
-        onClose={() => setPanelOpen(false)}
-        onExpand={handleExpand}
-      />
+      <div className="flex-1 flex overflow-hidden">
+        <main className={`overflow-auto transition-all ${panelOpen ? "w-[60%]" : "w-full"}`}>
+          <ThreadTable threads={threads} onSelectThread={handleSelectThread} />
+        </main>
+        {panelOpen && selectedThread && (
+          <aside className="w-[40%] flex-shrink-0">
+            <ThreadSlidePanel
+              thread={selectedThread}
+              onClose={() => setPanelOpen(false)}
+              onExpand={handleExpand}
+            />
+          </aside>
+        )}
+      </div>
       <ThreadDetailModal
         thread={selectedThread}
         open={modalOpen}
