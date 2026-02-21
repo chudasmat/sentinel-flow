@@ -40,7 +40,7 @@ export function QuickActions({ searchQuery, onSearchChange, labelFilters, onLabe
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Search thread ID or message…"
-          className="h-7 pl-7 text-xs font-mono bg-secondary border-border w-64"
+          className="h-7 pl-7 text-xs font-mono bg-secondary border-border w-[19.2rem]"
         />
       </div>
       <div className="relative" ref={ref}>
