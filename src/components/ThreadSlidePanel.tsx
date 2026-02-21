@@ -42,7 +42,7 @@ export function ThreadSlidePanel({ thread, onClose, onExpand }: Props) {
         {/* Semi-circle expand button on the left edge */}
         <button
           onClick={onExpand}
-          className="absolute top-1/2 -translate-y-1/2 -left-[22px] z-10 w-[22px] h-11 rounded-l-full bg-secondary border border-r-0 border-border flex items-center justify-center hover:bg-accent transition-colors"
+          className="absolute top-[40%] -translate-y-1/2 -left-[28px] z-10 w-[28px] h-14 rounded-l-full bg-secondary border border-r-0 border-border flex items-center justify-center hover:bg-accent transition-colors"
           title="Expand full workflow"
         >
           <ChevronLeft className="w-4 h-4 text-muted-foreground -ml-0.5" />
