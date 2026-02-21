@@ -64,24 +64,10 @@
 /* Scanline hover effect for table rows */
 .scanline-hover {
   position: relative;
-  overflow: hidden;
+  transition: background-color 0.15s;
 }
-.scanline-hover::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    hsl(120 100% 50% / 0.03) 50%,
-    transparent 100%
-  );
-  opacity: 0;
-  transition: opacity 0.15s;
-  pointer-events: none;
-}
-.scanline-hover:hover::after {
-  opacity: 1;
+.scanline-hover:hover {
+  background-color: hsl(0 0% 100% / 0.04);
 }
 
 /* Risk score glow */
