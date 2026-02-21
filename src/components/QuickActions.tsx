@@ -19,12 +19,14 @@ export function QuickActions({ searchQuery, onSearchChange }: Props) {
           className="h-7 pl-7 text-xs font-mono bg-secondary border-border"
         />
       </div>
+      <div className="ml-auto">
       <button
         className="border-l-2 border-safe text-safe text-xs font-mono px-3 py-1.5 bg-transparent hover:bg-safe/10 tracking-wider"
         onClick={() => alert("Execution limits (mock)")}
       >
         EXECUTION LIMITS
       </button>
+      </div>
     </div>
   );
 }
