@@ -38,11 +38,11 @@ export function ThreadSlidePanel({ thread, onClose, onExpand }: Props) {
       </div>
 
       {/* Message list with expand arrow */}
-      <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-visible">
         {/* Circular expand button sticking out halfway on the left edge */}
         <button
           onClick={onExpand}
-          className="absolute top-1/2 -left-4 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center hover:bg-accent transition-colors"
+          className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 left-0 z-10 w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center hover:bg-accent transition-colors"
           title="Expand full workflow"
         >
           <ChevronLeft className="w-4 h-4 text-muted-foreground" />
