@@ -36,6 +36,7 @@ export interface ThreadSummary {
   first_message_preview: string;
   risk_score: number;
   classification_label: ClassificationLabel;
+  top_probabilities: ClassificationProbabilities[];
   message_count: number;
   created_at: string;
   updated_at: string;
