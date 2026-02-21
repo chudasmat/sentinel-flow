@@ -20,31 +20,32 @@ export function ThreadSlidePanel({ thread, onClose, onExpand }: Props) {
   if (!thread) return null;
 
   return (
-    <div className="flex h-full">
-      {/* Expand arrow on left border */}
-      <button
-        onClick={onExpand}
-        className="flex items-center justify-center w-6 border-l border-border bg-secondary/30 hover:bg-secondary/60 transition-colors flex-shrink-0"
-        title="Expand full workflow"
-      >
-        <ChevronLeft className="w-4 h-4 text-muted-foreground" />
-      </button>
+    <div className="flex flex-col h-full border-l border-border bg-background">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+        <span className="text-xs font-mono tracking-wider">
+          THREAD: {thread.thread_id.substring(0, 12)}…
+        </span>
+        <button
+          onClick={onClose}
+          className="text-[10px] text-muted-foreground hover:text-foreground tracking-wider"
+        >
+          CLOSE
+        </button>
+      </div>
 
-      {/* Panel content */}
-      <div className="flex-1 flex flex-col border-l border-border bg-background min-w-0">
-        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-          <span className="text-xs font-mono tracking-wider">
-            THREAD: {thread.thread_id.substring(0, 12)}…
-          </span>
-          <button
-            onClick={onClose}
-            className="text-[10px] text-muted-foreground hover:text-foreground tracking-wider"
-          >
-            CLOSE
-          </button>
-        </div>
+      {/* Message list with expand arrow */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Expand arrow centered vertically with the message list */}
+        <button
+          onClick={onExpand}
+          className="flex items-center justify-center w-6 border-r border-border bg-secondary/30 hover:bg-secondary/60 transition-colors flex-shrink-0"
+          title="Expand full workflow"
+        >
+          <ChevronLeft className="w-4 h-4 text-muted-foreground" />
+        </button>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto min-w-0">
           {thread.messages.map((msg, i) => {
             const borderColor = msg.classification_label === "safe"
               ? "border-l-safe/40"
@@ -91,10 +92,11 @@ export function ThreadSlidePanel({ thread, onClose, onExpand }: Props) {
             );
           })}
         </div>
+      </div>
 
-        <div className="border-t border-border px-4 py-2 text-[10px] text-muted-foreground tracking-wider">
-          {thread.messages.length} MESSAGES
-        </div>
+      {/* Footer */}
+      <div className="border-t border-border px-4 py-2 text-[10px] text-muted-foreground tracking-wider">
+        {thread.messages.length} MESSAGES
       </div>
     </div>
   );
