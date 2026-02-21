@@ -1,12 +1,34 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useMemo } from "react";
+import { Header } from "@/components/Header";
+import { QuickActions } from "@/components/QuickActions";
+import { ThreadTable } from "@/components/ThreadTable";
+import { ThreadDetailModal } from "@/components/ThreadDetailModal";
+import { fetchThreads, fetchThreadDetail } from "@/lib/mock-data";
+import type { ThreadDetail } from "@/lib/types";
 
 const Index = () => {
+  const threads = useMemo(() => fetchThreads(), []);
+  const [selectedThread, setSelectedThread] = useState<ThreadDetail | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  function handleSelectThread(threadId: string) {
+    const detail = fetchThreadDetail(threadId);
+    setSelectedThread(detail);
+    setModalOpen(true);
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background dot-grid flex flex-col">
+      <Header />
+      <QuickActions />
+      <main className="flex-1 overflow-auto">
+        <ThreadTable threads={threads} onSelectThread={handleSelectThread} />
+      </main>
+      <ThreadDetailModal
+        thread={selectedThread}
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 };
