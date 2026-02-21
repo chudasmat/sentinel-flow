@@ -80,7 +80,7 @@ export function MessageCard({ message, index, isLast }: Props) {
             <div>
               <span className="text-[10px] text-muted-foreground">PROBABILITIES:</span>
               <div className="mt-1 space-y-1">
-                {message.probabilities.slice(0, 6).map((p) => (
+                {message.probabilities.slice(0, 5).map((p) => (
                   <div key={p.label} className="flex items-center gap-2 text-[10px]">
                     <span className="w-24 text-muted-foreground truncate">{p.label}</span>
                     <div className="flex-1 h-1.5 bg-secondary">
