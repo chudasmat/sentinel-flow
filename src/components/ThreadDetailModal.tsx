@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
@@ -65,31 +66,31 @@ export function ThreadDetailModal({ thread, open, onClose }: Props) {
 
             return (
               <div key={rowIndex}>
-                <div className={`flex items-start gap-0 ${isEvenRow ? "justify-start" : "justify-end"}`}>
+                <div className="grid items-start" style={{ gridTemplateColumns: `repeat(${displayRow.length}, 1fr auto)` }}>
                   {displayRow.map((msg, i) => {
                     const globalIndex = rowIndex * CARDS_PER_ROW + (isEvenRow ? i : row.length - 1 - i);
                     const isLastInRow = i === displayRow.length - 1;
                     const isLastMessage = globalIndex === thread.messages.length - 1;
 
                     return (
-                      <div key={msg.id} className="flex items-start gap-0">
+                      <React.Fragment key={msg.id}>
                         <MessageCard
                           message={msg}
                           index={globalIndex}
                           isLast={isLastMessage}
                         />
                         {!isLastInRow && (
-                          <div className="flex items-center self-center mx-1">
+                          <div className="flex items-center justify-center self-center">
                             {isEvenRow ? <ArrowRight /> : <ArrowLeft />}
                           </div>
                         )}
-                      </div>
+                      </React.Fragment>
                     );
                   })}
                 </div>
 
                 {!isLastRow && (
-                  <div className={`flex ${isEvenRow ? "justify-end pr-[7.5rem]" : "justify-start pl-[7.5rem]"} py-1`}>
+                  <div className={`flex ${isEvenRow ? "justify-end" : "justify-start"} py-1`} style={{ paddingLeft: isEvenRow ? undefined : `calc(100% / ${CARDS_PER_ROW * 2})`, paddingRight: isEvenRow ? `calc(100% / ${CARDS_PER_ROW * 2})` : undefined }}>
                     <ArrowDown />
                   </div>
                 )}
