@@ -5,7 +5,7 @@ import { ThreadTable } from "@/components/ThreadTable";
 import { ThreadSlidePanel } from "@/components/ThreadSlidePanel";
 import { ThreadDetailModal } from "@/components/ThreadDetailModal";
 import { fetchThreads, fetchThreadDetail } from "@/lib/mock-data";
-import type { ThreadDetail } from "@/lib/types";
+import type { ThreadDetail, ClassificationLabel } from "@/lib/types";
 
 const Index = () => {
   const allThreads = useMemo(() => fetchThreads(), []);
@@ -13,7 +13,7 @@ const Index = () => {
   const [panelOpen, setPanelOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [labelFilter, setLabelFilter] = useState("all");
+  const [labelFilters, setLabelFilters] = useState<ClassificationLabel[]>([]);
 
   const threads = useMemo(() => {
     let filtered = allThreads;
@@ -25,11 +25,11 @@ const Index = () => {
           t.first_message_preview.toLowerCase().includes(q)
       );
     }
-    if (labelFilter !== "all") {
-      filtered = filtered.filter((t) => t.classification_label === labelFilter);
+    if (labelFilters.length > 0) {
+      filtered = filtered.filter((t) => labelFilters.includes(t.classification_label));
     }
     return filtered;
-  }, [allThreads, searchQuery, labelFilter]);
+  }, [allThreads, searchQuery, labelFilters]);
 
   function handleSelectThread(threadId: string) {
     const detail = fetchThreadDetail(threadId);
@@ -44,7 +44,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <QuickActions searchQuery={searchQuery} onSearchChange={setSearchQuery} labelFilter={labelFilter} onLabelFilterChange={setLabelFilter} />
+      <QuickActions searchQuery={searchQuery} onSearchChange={setSearchQuery} labelFilters={labelFilters} onLabelFiltersChange={setLabelFilters} />
       <div className="flex-1 flex overflow-hidden">
         <main className={`overflow-auto transition-all ${panelOpen ? "w-[60%]" : "w-full"}`}>
           <ThreadTable threads={threads} onSelectThread={handleSelectThread} />
