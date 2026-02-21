@@ -38,16 +38,17 @@ export function ThreadSlidePanel({ thread, onClose, onExpand }: Props) {
       </div>
 
       {/* Message list with expand arrow */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 relative overflow-hidden">
+        {/* Circular expand button sticking out halfway on the left edge */}
         <button
           onClick={onExpand}
-          className="flex items-center justify-center w-6 border-r border-border bg-secondary/30 hover:bg-secondary/60 transition-colors flex-shrink-0"
+          className="absolute top-1/2 -left-4 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-secondary border border-border flex items-center justify-center hover:bg-accent transition-colors"
           title="Expand full workflow"
         >
           <ChevronLeft className="w-4 h-4 text-muted-foreground" />
         </button>
 
-        <div className="flex-1 overflow-y-auto min-w-0">
+        <div className="h-full overflow-y-auto min-w-0">
           {thread.messages.map((msg, i) => {
             const borderColor = msg.classification_label === "safe"
               ? "border-l-safe/40"
