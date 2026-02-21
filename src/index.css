@@ -70,10 +70,10 @@
   background-color: hsl(0 0% 100% / 0.04);
 }
 
-/* Risk score glow */
-.glow-safe { text-shadow: 0 0 8px hsl(120 100% 50% / 0.6); }
-.glow-hazard { text-shadow: 0 0 8px hsl(43 100% 50% / 0.6); }
-.glow-danger { text-shadow: 0 0 8px hsl(0 100% 60% / 0.6); }
+/* Risk score glow (disabled) */
+.glow-safe { }
+.glow-hazard { }
+.glow-danger { }
 
 /* Taint log flash */
 @keyframes log-flash {
