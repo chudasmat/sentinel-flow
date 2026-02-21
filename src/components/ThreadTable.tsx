@@ -96,7 +96,7 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
                   </TooltipTrigger>
                   <TooltipContent side="top" className="bg-popover border-border p-2">
                     <div className="space-y-1">
-                      {t.top_probabilities.map((p) => (
+                      {(t.top_probabilities ?? []).map((p) => (
                         <div key={p.label} className="flex items-center justify-between gap-4 text-[10px] font-mono">
                           <span className="text-muted-foreground">{p.label}</span>
                           <span className="text-foreground">{(p.probability * 100).toFixed(1)}%</span>
