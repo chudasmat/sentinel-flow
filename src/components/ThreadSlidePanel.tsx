@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Maximize2 } from "lucide-react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { ChevronLeft } from "lucide-react";
 import type { ThreadDetail } from "@/lib/types";
 import { getRiskColorClass } from "@/lib/types";
 
@@ -13,29 +12,37 @@ const ROLE_LABELS: Record<string, string> = {
 
 interface Props {
   thread: ThreadDetail | null;
-  open: boolean;
   onClose: () => void;
   onExpand: () => void;
 }
 
-export function ThreadSlidePanel({ thread, open, onClose, onExpand }: Props) {
+export function ThreadSlidePanel({ thread, onClose, onExpand }: Props) {
   if (!thread) return null;
 
   return (
-    <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
-      <SheetContent side="right" className="p-0 flex flex-col bg-background border-border sm:max-w-md">
-        <SheetHeader className="px-4 py-3 border-b border-border flex-row items-center justify-between space-y-0">
-          <SheetTitle className="text-xs font-mono tracking-wider">
+    <div className="flex h-full">
+      {/* Expand arrow on left border */}
+      <button
+        onClick={onExpand}
+        className="flex items-center justify-center w-6 border-l border-border bg-secondary/30 hover:bg-secondary/60 transition-colors flex-shrink-0"
+        title="Expand full workflow"
+      >
+        <ChevronLeft className="w-4 h-4 text-muted-foreground" />
+      </button>
+
+      {/* Panel content */}
+      <div className="flex-1 flex flex-col border-l border-border bg-background min-w-0">
+        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+          <span className="text-xs font-mono tracking-wider">
             THREAD: {thread.thread_id.substring(0, 12)}…
-          </SheetTitle>
+          </span>
           <button
-            onClick={onExpand}
-            className="text-muted-foreground hover:text-foreground transition-colors mr-8"
-            title="Expand full workflow"
+            onClick={onClose}
+            className="text-[10px] text-muted-foreground hover:text-foreground tracking-wider"
           >
-            <Maximize2 className="w-4 h-4" />
+            CLOSE
           </button>
-        </SheetHeader>
+        </div>
 
         <div className="flex-1 overflow-y-auto">
           {thread.messages.map((msg, i) => {
@@ -88,7 +95,7 @@ export function ThreadSlidePanel({ thread, open, onClose, onExpand }: Props) {
         <div className="border-t border-border px-4 py-2 text-[10px] text-muted-foreground tracking-wider">
           {thread.messages.length} MESSAGES
         </div>
-      </SheetContent>
-    </Sheet>
+      </div>
+    </div>
   );
 }
