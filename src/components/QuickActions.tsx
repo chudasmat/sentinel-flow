@@ -88,14 +88,6 @@ export function QuickActions({ searchQuery, onSearchChange, labelFilters, onLabe
           ))}
         </div>
       )}
-      <div className="ml-auto">
-        <button
-          className="border-l-2 border-safe text-safe text-xs font-mono px-3 py-1.5 bg-transparent hover:bg-safe/10 tracking-wider"
-          onClick={() => alert("Execution limits (mock)")}
-        >
-          EXECUTION LIMITS
-        </button>
-      </div>
     </div>
   );
 }
