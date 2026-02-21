@@ -1,0 +1,117 @@
+import React from "react";
+import { MessageCard } from "@/components/MessageCard";
+import type { ThreadDetail } from "@/lib/types";
+import { ChevronRight } from "lucide-react";
+
+function ArrowRight() {
+  return (
+    <svg width="40" height="20" viewBox="0 0 40 20" className="text-muted-foreground/60">
+      <line x1="0" y1="10" x2="28" y2="10" stroke="currentColor" strokeWidth="2" />
+      <polygon points="28,4 40,10 28,16" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ArrowLeft() {
+  return (
+    <svg width="40" height="20" viewBox="0 0 40 20" className="text-muted-foreground/60">
+      <line x1="12" y1="10" x2="40" y2="10" stroke="currentColor" strokeWidth="2" />
+      <polygon points="12,4 0,10 12,16" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ArrowDown() {
+  return (
+    <svg width="20" height="32" viewBox="0 0 20 32" className="text-muted-foreground/60">
+      <line x1="10" y1="0" x2="10" y2="20" stroke="currentColor" strokeWidth="2" />
+      <polygon points="4,20 10,32 16,20" fill="currentColor" />
+    </svg>
+  );
+}
+
+interface Props {
+  thread: ThreadDetail | null;
+  onCollapse: () => void;
+}
+
+const CARDS_PER_ROW = 3;
+
+export function ThreadWorkflowPanel({ thread, onCollapse }: Props) {
+  if (!thread) return null;
+
+  const rows: typeof thread.messages[] = [];
+  for (let i = 0; i < thread.messages.length; i += CARDS_PER_ROW) {
+    rows.push(thread.messages.slice(i, i + CARDS_PER_ROW));
+  }
+
+  return (
+    <div className="flex flex-col h-full border-l border-border bg-background">
+      {/* Header */}
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+        <span className="text-xs font-mono tracking-wider">
+          THREAD: {thread.thread_id} — {thread.messages.length} MESSAGES
+        </span>
+        <button
+          onClick={onCollapse}
+          className="text-[10px] text-muted-foreground hover:text-foreground tracking-wider"
+        >
+          CLOSE
+        </button>
+      </div>
+
+      {/* Workflow content with collapse arrow */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Collapse arrow */}
+        <button
+          onClick={onCollapse}
+          className="flex items-center justify-center w-6 border-r border-border bg-secondary/30 hover:bg-secondary/60 transition-colors flex-shrink-0"
+          title="Collapse to list view"
+        >
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        </button>
+
+        <div className="flex-1 overflow-y-auto p-4 min-w-0">
+          {rows.map((row, rowIndex) => {
+            const isEvenRow = rowIndex % 2 === 0;
+            const displayRow = isEvenRow ? row : [...row].reverse();
+            const isLastRow = rowIndex === rows.length - 1;
+
+            return (
+              <div key={rowIndex}>
+                <div className="grid items-start" style={{ gridTemplateColumns: `repeat(${displayRow.length * 2 - 1}, auto)` }}>
+                  {displayRow.map((msg, i) => {
+                    const globalIndex = rowIndex * CARDS_PER_ROW + (isEvenRow ? i : row.length - 1 - i);
+                    const isLastInRow = i === displayRow.length - 1;
+                    const isLastMessage = globalIndex === thread.messages.length - 1;
+
+                    return (
+                      <React.Fragment key={msg.id}>
+                        <MessageCard
+                          message={msg}
+                          index={globalIndex}
+                          isLast={isLastMessage}
+                        />
+                        {!isLastInRow && (
+                          <div className="flex items-start justify-center pt-10">
+                            {isEvenRow ? <ArrowRight /> : <ArrowLeft />}
+                          </div>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+
+                {!isLastRow && (
+                  <div className={`flex ${isEvenRow ? "justify-end" : "justify-start"} py-1`} style={{ paddingLeft: isEvenRow ? undefined : `calc(100% / ${CARDS_PER_ROW * 2})`, paddingRight: isEvenRow ? `calc(100% / ${CARDS_PER_ROW * 2})` : undefined }}>
+                    <ArrowDown />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
