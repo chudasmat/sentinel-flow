@@ -54,7 +54,7 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
             RISK{sortIndicator("risk_score")}
           </TableHead>
           <TableHead className="cursor-pointer text-xs select-none" onClick={() => toggleSort("classification_label")}>
-            LABEL{sortIndicator("classification_label")}
+            INTENT{sortIndicator("classification_label")}
           </TableHead>
           <TableHead className="text-xs text-center">MSGS</TableHead>
         </TableRow>
