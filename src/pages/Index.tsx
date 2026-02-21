@@ -3,49 +3,55 @@ import { Header } from "@/components/Header";
 import { QuickActions } from "@/components/QuickActions";
 import { ThreadTable } from "@/components/ThreadTable";
 import { ThreadSlidePanel } from "@/components/ThreadSlidePanel";
-import { ThreadDetailModal } from "@/components/ThreadDetailModal";
+import { ThreadWorkflowPanel } from "@/components/ThreadWorkflowPanel";
 import { fetchThreads, fetchThreadDetail } from "@/lib/mock-data";
 import type { ThreadDetail } from "@/lib/types";
+
+type PanelMode = "closed" | "condensed" | "expanded";
 
 const Index = () => {
   const threads = useMemo(() => fetchThreads(), []);
   const [selectedThread, setSelectedThread] = useState<ThreadDetail | null>(null);
-  const [panelOpen, setPanelOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [panelMode, setPanelMode] = useState<PanelMode>("closed");
 
   function handleSelectThread(threadId: string) {
     const detail = fetchThreadDetail(threadId);
     setSelectedThread(detail);
-    setPanelOpen(true);
+    setPanelMode("condensed");
   }
 
-  function handleExpand() {
-    setModalOpen(true);
+  function handleClose() {
+    setPanelMode("closed");
   }
+
+  const tableWidth = panelMode === "closed" ? "w-full" : panelMode === "condensed" ? "w-[60%]" : "w-[30%]";
+  const panelWidth = panelMode === "condensed" ? "w-[40%]" : "w-[70%]";
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <QuickActions />
       <div className="flex-1 flex overflow-hidden">
-        <main className={`overflow-auto transition-all ${panelOpen ? "w-[60%]" : "w-full"}`}>
+        <main className={`overflow-auto transition-all ${tableWidth}`}>
           <ThreadTable threads={threads} onSelectThread={handleSelectThread} />
         </main>
-        {panelOpen && selectedThread && (
-          <aside className="w-[40%] flex-shrink-0">
-            <ThreadSlidePanel
-              thread={selectedThread}
-              onClose={() => setPanelOpen(false)}
-              onExpand={handleExpand}
-            />
+        {panelMode !== "closed" && selectedThread && (
+          <aside className={`flex-shrink-0 transition-all ${panelWidth}`}>
+            {panelMode === "condensed" ? (
+              <ThreadSlidePanel
+                thread={selectedThread}
+                onClose={handleClose}
+                onExpand={() => setPanelMode("expanded")}
+              />
+            ) : (
+              <ThreadWorkflowPanel
+                thread={selectedThread}
+                onCollapse={handleClose}
+              />
+            )}
           </aside>
         )}
       </div>
-      <ThreadDetailModal
-        thread={selectedThread}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-      />
     </div>
   );
 };
