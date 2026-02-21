@@ -158,6 +158,7 @@ function generateThread(minutesAgo: number): { summary: ThreadSummary; detail: T
       first_message_preview: firstUserMsg?.content.substring(0, 80) || messages[1]?.content.substring(0, 80) || "—",
       risk_score: worstMessage.risk_score,
       classification_label: worstMessage.classification_label,
+      top_probabilities: worstMessage.probabilities.slice(0, 3),
       message_count: msgCount,
       created_at: pastDate(minutesAgo),
       updated_at: pastDate(minutesAgo - msgCount * 2),
