@@ -28,7 +28,7 @@ export function MessageCard({ message, index, isLast }: Props) {
   return (
     <div className="flex items-start gap-0">
       <div
-        className={`border ${borderColor} bg-card p-3 cursor-pointer hover:bg-secondary/50 transition-colors flex-shrink-0 w-64`}
+        className={`border ${borderColor} bg-card p-3 cursor-pointer hover:bg-secondary/50 transition-colors min-w-0`}
         onClick={() => setExpanded(!expanded)}
       >
         {/* Header */}
