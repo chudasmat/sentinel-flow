@@ -98,7 +98,7 @@ export function ThreadDetailModal({ thread, open, onClose }: Props) {
           })}
         </div>
 
-        <TaintLog entries={thread.taint_log} />
+        
       </DialogContent>
     </Dialog>
   );
