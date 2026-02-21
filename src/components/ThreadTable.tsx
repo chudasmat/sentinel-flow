@@ -56,9 +56,6 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
             LABEL{sortIndicator("classification_label")}
           </TableHead>
           <TableHead className="text-xs text-center">MSGS</TableHead>
-          <TableHead className="cursor-pointer text-xs select-none" onClick={() => toggleSort("created_at")}>
-            TIME{sortIndicator("created_at")}
-          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -95,9 +92,6 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
             </TableCell>
             <TableCell className="text-xs text-center text-muted-foreground py-2">
               {t.message_count}
-            </TableCell>
-            <TableCell className="text-xs text-muted-foreground py-2">
-              {formatTime(t.created_at)}
             </TableCell>
           </TableRow>
         ))}
