@@ -66,7 +66,7 @@ export function ThreadDetailModal({ thread, open, onClose }: Props) {
 
             return (
               <div key={rowIndex}>
-                <div className="grid items-start" style={{ gridTemplateColumns: `repeat(${displayRow.length}, 1fr auto)` }}>
+                <div className="grid items-start" style={{ gridTemplateColumns: `repeat(${displayRow.length * 2 - 1}, auto)` }}>
                   {displayRow.map((msg, i) => {
                     const globalIndex = rowIndex * CARDS_PER_ROW + (isEvenRow ? i : row.length - 1 - i);
                     const isLastInRow = i === displayRow.length - 1;
@@ -80,7 +80,7 @@ export function ThreadDetailModal({ thread, open, onClose }: Props) {
                           isLast={isLastMessage}
                         />
                         {!isLastInRow && (
-                          <div className="flex items-center justify-center self-center">
+                          <div className="flex items-start justify-center pt-10">
                             {isEvenRow ? <ArrowRight /> : <ArrowLeft />}
                           </div>
                         )}
