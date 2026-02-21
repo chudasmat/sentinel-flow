@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import type { ThreadSummary } from "@/lib/types";
 import { getRiskColorClass, getRiskGlowClass } from "@/lib/types";
 
@@ -78,12 +78,12 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
               </span>
             </TableCell>
             <TableCell className="py-2">
-              <TooltipProvider delayDuration={200}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
+              <HoverCard openDelay={200} closeDelay={100}>
+                <HoverCardTrigger>
+                  <span className="inline-flex">
                     <Badge
                       variant="outline"
-                      className={`text-[10px] font-mono ${
+                      className={`text-[10px] font-mono cursor-default ${
                         t.classification_label === "safe"
                           ? "border-safe text-safe"
                           : t.risk_score > 6
@@ -93,19 +93,19 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
                     >
                       {t.classification_label}
                     </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="bg-popover border-border p-2">
-                    <div className="space-y-1">
-                      {(t.top_probabilities ?? []).map((p) => (
-                        <div key={p.label} className="flex items-center justify-between gap-4 text-[10px] font-mono">
-                          <span className="text-muted-foreground">{p.label}</span>
-                          <span className="text-foreground">{(p.probability * 100).toFixed(1)}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                  </span>
+                </HoverCardTrigger>
+                <HoverCardContent side="top" align="start" className="w-auto p-2 bg-popover border-border">
+                  <div className="space-y-1">
+                    {(t.top_probabilities ?? []).map((p) => (
+                      <div key={p.label} className="flex items-center justify-between gap-4 text-[10px] font-mono">
+                        <span className="text-muted-foreground">{p.label}</span>
+                        <span className="text-foreground">{(p.probability * 100).toFixed(1)}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
             </TableCell>
             <TableCell className="text-xs text-center text-muted-foreground py-2">
               {t.message_count}
