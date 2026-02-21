@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import type { MessageDetail } from "@/lib/types";
 import { getRiskColorClass, getRiskBorderClass } from "@/lib/types";
-import { ChevronRight } from "lucide-react";
 
 interface Props {
   message: MessageDetail;
@@ -114,12 +113,6 @@ export function MessageCard({ message, index, isLast }: Props) {
         )}
       </div>
 
-      {/* Arrow connector */}
-      {!isLast && (
-        <div className="flex items-center self-center -mx-0.5">
-          <ChevronRight className="w-4 h-4 text-muted-foreground/40" />
-        </div>
-      )}
     </div>
   );
 }
