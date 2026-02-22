@@ -1,18 +1,32 @@
+import { supabase } from "@/integrations/supabase/client";
 import type { ThreadSummary, ThreadMessagesResponse } from "./types";
 
-const BASE_URL = "http://bastion.iammik.us";
+async function bastionGet(path: string): Promise<any> {
+  const { data, error } = await supabase.functions.invoke("bastion-proxy", {
+    body: { path },
+    method: "POST",
+  });
+  if (error) throw new Error(`Proxy error: ${error.message}`);
+  return data;
+}
+
+async function bastionPost(path: string, body: unknown): Promise<any> {
+  // We pass the bastion path + body through our proxy
+  const { data, error } = await supabase.functions.invoke("bastion-proxy", {
+    body: { path, payload: body },
+    method: "POST",
+  });
+  if (error) throw new Error(`Proxy error: ${error.message}`);
+  return data;
+}
 
 export async function fetchThreads(): Promise<ThreadSummary[]> {
-  const res = await fetch(`${BASE_URL}/threads`);
-  if (!res.ok) throw new Error(`Failed to fetch threads: ${res.status}`);
-  const data = await res.json();
+  const data = await bastionGet("/threads");
   return data.threads;
 }
 
 export async function fetchThreadMessages(threadId: string): Promise<ThreadMessagesResponse> {
-  const res = await fetch(`${BASE_URL}/threads/${threadId}/messages`);
-  if (!res.ok) throw new Error(`Failed to fetch thread messages: ${res.status}`);
-  return res.json();
+  return bastionGet(`/threads/${threadId}/messages`);
 }
 
 export interface ClassifyResult {
@@ -22,18 +36,10 @@ export interface ClassifyResult {
 }
 
 export async function classifyTexts(texts: string[]): Promise<ClassifyResult[]> {
-  const res = await fetch(`${BASE_URL}/classify`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: texts }),
-  });
-  if (!res.ok) throw new Error(`Classification failed: ${res.status}`);
-  const data = await res.json();
+  const data = await bastionPost("/classify", { text: texts });
   return data.results;
 }
 
 export async function fetchHealth(): Promise<{ status: string; model_loaded: boolean }> {
-  const res = await fetch(`${BASE_URL}/health`);
-  if (!res.ok) throw new Error(`Health check failed: ${res.status}`);
-  return res.json();
+  return bastionGet("/health");
 }

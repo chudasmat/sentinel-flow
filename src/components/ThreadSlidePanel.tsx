@@ -121,7 +121,7 @@ export function ThreadSlidePanel({ thread, classifications, onClose, onExpand }:
                         <span className="text-[10px] text-muted-foreground">METADATA:</span>
                         <div className="mt-1 text-[10px] text-muted-foreground">
                           {Object.entries(msg.metadata).map(([k, v]) => (
-                            <div key={k}>{k}: {String(v)}</div>
+                            <div key={k}>{k}: {typeof v === "object" ? JSON.stringify(v) : String(v)}</div>
                           ))}
                         </div>
                       </div>
