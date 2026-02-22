@@ -3,8 +3,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { MessageCard } from "@/components/MessageCard";
-import type { ThreadMessagesResponse } from "@/lib/types";
-import type { ClassifyResult } from "@/lib/api";
+import type { ThreadDetail } from "@/lib/types";
 
 function ArrowRight() {
   return (
@@ -34,16 +33,16 @@ function ArrowDown() {
 }
 
 interface Props {
-  thread: ThreadMessagesResponse | null;
-  classifications: Map<number, ClassifyResult>;
+  thread: ThreadDetail | null;
   open: boolean;
   onClose: () => void;
 }
 
 const CARDS_PER_ROW = 3;
 
-export function ThreadDetailModal({ thread, classifications, open, onClose }: Props) {
+export function ThreadDetailModal({ thread, open, onClose }: Props) {
   if (!thread) return null;
+  const autoExpandCards = thread.messages.length <= 4;
 
   const rows: typeof thread.messages[] = [];
   for (let i = 0; i < thread.messages.length; i += CARDS_PER_ROW) {
@@ -55,7 +54,7 @@ export function ThreadDetailModal({ thread, classifications, open, onClose }: Pr
       <DialogContent className="max-w-5xl w-[95vw] max-h-[90vh] flex flex-col p-0 gap-0 border-border bg-background">
         <DialogHeader className="px-4 py-3 border-b border-border">
           <DialogTitle className="text-xs font-mono tracking-wider">
-            THREAD: {thread.thread_id} — {thread.messages.length} MESSAGES — RISK: {thread.risk_score.toFixed(1)}
+            THREAD: {thread.thread_id} — {thread.messages.length} MESSAGES
           </DialogTitle>
         </DialogHeader>
 
@@ -69,17 +68,13 @@ export function ThreadDetailModal({ thread, classifications, open, onClose }: Pr
               <div key={rowIndex}>
                 <div className="grid items-start" style={{ gridTemplateColumns: `repeat(${displayRow.length * 2 - 1}, auto)` }}>
                   {displayRow.map((msg, i) => {
-                    const globalIndex = rowIndex * CARDS_PER_ROW + (isEvenRow ? i : row.length - 1 - i);
                     const isLastInRow = i === displayRow.length - 1;
-                    const isLastMessage = globalIndex === thread.messages.length - 1;
 
                     return (
                       <React.Fragment key={msg.id}>
                         <MessageCard
                           message={msg}
-                          classification={classifications.get(msg.id)}
-                          index={globalIndex}
-                          isLast={isLastMessage}
+                          defaultExpanded={autoExpandCards}
                         />
                         {!isLastInRow && (
                           <div className="flex items-start justify-center pt-10">
@@ -92,7 +87,7 @@ export function ThreadDetailModal({ thread, classifications, open, onClose }: Pr
                 </div>
 
                 {!isLastRow && (
-                  <div className={`flex ${isEvenRow ? "justify-end" : "justify-start"} py-1`} style={{ paddingLeft: isEvenRow ? undefined : `calc(100% / ${CARDS_PER_ROW * 2})`, paddingRight: isEvenRow ? `calc(100% / ${CARDS_PER_ROW * 2})` : undefined }}>
+                  <div className={`flex ${isEvenRow ? "justify-end" : "justify-start"} py-1`}>
                     <ArrowDown />
                   </div>
                 )}
@@ -100,6 +95,8 @@ export function ThreadDetailModal({ thread, classifications, open, onClose }: Pr
             );
           })}
         </div>
+
+        
       </DialogContent>
     </Dialog>
   );
