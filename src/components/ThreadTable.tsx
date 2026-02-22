@@ -1,11 +1,10 @@
 import { useMemo, useState } from "react";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import type { ThreadSummary } from "@/lib/types";
-import { getRiskColorClass, getRiskGlowClass } from "@/lib/types";
+import { getRiskColorClass, getRiskGlowClass, getRiskLabel, formatEpoch } from "@/lib/types";
 
-type SortKey = "risk_score" | "created_at" | "thread_id" | "classification_label";
+type SortKey = "risk_score" | "created_at" | "thread_id";
 type SortDir = "asc" | "desc";
 
 interface Props {
@@ -21,9 +20,8 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
     return [...threads].sort((a, b) => {
       let cmp = 0;
       if (sortKey === "risk_score") cmp = a.risk_score - b.risk_score;
-      else if (sortKey === "created_at") cmp = a.created_at.localeCompare(b.created_at);
-      else if (sortKey === "thread_id") cmp = a.thread_id.localeCompare(b.thread_id);
-      else cmp = a.classification_label.localeCompare(b.classification_label);
+      else if (sortKey === "created_at") cmp = a.created_at - b.created_at;
+      else cmp = a.thread_id.localeCompare(b.thread_id);
       return sortDir === "desc" ? -cmp : cmp;
     });
   }, [threads, sortKey, sortDir]);
@@ -38,10 +36,6 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
     return sortDir === "asc" ? " ▲" : " ▼";
   }
 
-  function formatTime(iso: string) {
-    return new Date(iso).toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" });
-  }
-
   return (
     <Table>
       <TableHeader>
@@ -53,10 +47,10 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
           <TableHead className="cursor-pointer text-xs select-none w-24 text-center" onClick={() => toggleSort("risk_score")}>
             RISK{sortIndicator("risk_score")}
           </TableHead>
-          <TableHead className="cursor-pointer text-xs select-none" onClick={() => toggleSort("classification_label")}>
-            INTENT{sortIndicator("classification_label")}
+          <TableHead className="text-xs">STATUS</TableHead>
+          <TableHead className="cursor-pointer text-xs select-none text-center" onClick={() => toggleSort("created_at")}>
+            CREATED{sortIndicator("created_at")}
           </TableHead>
-          <TableHead className="text-xs text-center">MSGS</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -67,10 +61,10 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
             onClick={() => onSelectThread(t.thread_id)}
           >
             <TableCell className="text-xs text-muted-foreground font-mono py-2">
-              {t.thread_id.substring(0, 12)}…
+              {t.thread_id.substring(0, 16)}…
             </TableCell>
             <TableCell className="text-xs max-w-xs truncate py-2">
-              {t.first_message_preview}
+              {t.first_user_message || "—"}
             </TableCell>
             <TableCell className="text-center py-2">
               <span className={`text-sm font-bold ${getRiskColorClass(t.risk_score)} ${getRiskGlowClass(t.risk_score)}`}>
@@ -78,37 +72,21 @@ export function ThreadTable({ threads, onSelectThread }: Props) {
               </span>
             </TableCell>
             <TableCell className="py-2">
-              <HoverCard openDelay={200} closeDelay={100}>
-                <HoverCardTrigger>
-                  <span className="inline-flex">
-                    <Badge
-                      variant="outline"
-                      className={`text-[10px] font-mono cursor-default ${
-                        t.classification_label === "safe"
-                          ? "border-safe text-safe"
-                          : t.risk_score > 6
-                          ? "border-danger text-danger"
-                          : "border-hazard text-hazard"
-                      }`}
-                    >
-                      {t.classification_label}
-                    </Badge>
-                  </span>
-                </HoverCardTrigger>
-                <HoverCardContent side="top" align="start" className="w-auto p-2 bg-popover border-border">
-                  <div className="space-y-1">
-                    {(t.top_probabilities ?? []).map((p) => (
-                      <div key={p.label} className="flex items-center justify-between gap-4 text-[10px] font-mono">
-                        <span className="text-muted-foreground">{p.label}</span>
-                        <span className="text-foreground">{(p.probability * 100).toFixed(1)}%</span>
-                      </div>
-                    ))}
-                  </div>
-                </HoverCardContent>
-              </HoverCard>
+              <Badge
+                variant="outline"
+                className={`text-[10px] font-mono cursor-default ${
+                  t.risk_score <= 3
+                    ? "border-safe text-safe"
+                    : t.risk_score > 6
+                    ? "border-danger text-danger"
+                    : "border-hazard text-hazard"
+                }`}
+              >
+                {getRiskLabel(t.risk_score)}
+              </Badge>
             </TableCell>
-            <TableCell className="text-xs text-center text-muted-foreground py-2">
-              {t.message_count}
+            <TableCell className="text-xs text-center text-muted-foreground py-2 font-mono">
+              {formatEpoch(t.created_at)}
             </TableCell>
           </TableRow>
         ))}

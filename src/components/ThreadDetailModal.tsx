@@ -3,8 +3,8 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { MessageCard } from "@/components/MessageCard";
-import { TaintLog } from "@/components/TaintLog";
-import type { ThreadDetail } from "@/lib/types";
+import type { ThreadMessagesResponse } from "@/lib/types";
+import type { ClassifyResult } from "@/lib/api";
 
 function ArrowRight() {
   return (
@@ -34,14 +34,15 @@ function ArrowDown() {
 }
 
 interface Props {
-  thread: ThreadDetail | null;
+  thread: ThreadMessagesResponse | null;
+  classifications: Map<number, ClassifyResult>;
   open: boolean;
   onClose: () => void;
 }
 
 const CARDS_PER_ROW = 3;
 
-export function ThreadDetailModal({ thread, open, onClose }: Props) {
+export function ThreadDetailModal({ thread, classifications, open, onClose }: Props) {
   if (!thread) return null;
 
   const rows: typeof thread.messages[] = [];
@@ -54,7 +55,7 @@ export function ThreadDetailModal({ thread, open, onClose }: Props) {
       <DialogContent className="max-w-5xl w-[95vw] max-h-[90vh] flex flex-col p-0 gap-0 border-border bg-background">
         <DialogHeader className="px-4 py-3 border-b border-border">
           <DialogTitle className="text-xs font-mono tracking-wider">
-            THREAD: {thread.thread_id} — {thread.messages.length} MESSAGES
+            THREAD: {thread.thread_id} — {thread.messages.length} MESSAGES — RISK: {thread.risk_score.toFixed(1)}
           </DialogTitle>
         </DialogHeader>
 
@@ -76,6 +77,7 @@ export function ThreadDetailModal({ thread, open, onClose }: Props) {
                       <React.Fragment key={msg.id}>
                         <MessageCard
                           message={msg}
+                          classification={classifications.get(msg.id)}
                           index={globalIndex}
                           isLast={isLastMessage}
                         />
@@ -98,8 +100,6 @@ export function ThreadDetailModal({ thread, open, onClose }: Props) {
             );
           })}
         </div>
-
-        
       </DialogContent>
     </Dialog>
   );
