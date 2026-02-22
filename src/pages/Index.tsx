@@ -19,24 +19,35 @@ const Index = () => {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError(null);
-    fetchThreads()
-      .then((data) => {
-        if (cancelled) return;
-        setAllThreads(data);
-      })
-      .catch((err) => {
-        if (cancelled) return;
-        setError(err instanceof Error ? err.message : "Failed to load threads.");
-      })
-      .finally(() => {
-        if (cancelled) return;
-        setLoading(false);
-      });
+
+    const loadThreads = (showLoading: boolean) => {
+      if (showLoading) {
+        setLoading(true);
+      }
+      setError(null);
+      fetchThreads()
+        .then((data) => {
+          if (cancelled) return;
+          setAllThreads(data);
+        })
+        .catch((err) => {
+          if (cancelled) return;
+          setError(err instanceof Error ? err.message : "Failed to load threads.");
+        })
+        .finally(() => {
+          if (cancelled) return;
+          if (showLoading) {
+            setLoading(false);
+          }
+        });
+    };
+
+    loadThreads(true);
+    const intervalId = setInterval(() => loadThreads(false), 5000);
 
     return () => {
       cancelled = true;
+      clearInterval(intervalId);
     };
   }, []);
 
